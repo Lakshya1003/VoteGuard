@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoteGuard</title>
+    <title>VoteGuard Global</title>
     <meta name="description" content="Secure SQLite-based voting verification system">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,7 +12,7 @@
     <div class="container">
         <header>
             <h1>VoteGuard</h1>
-            <p class="subtitle">Secure Backend Database Validation</p>
+            <p class="subtitle">Secure Backend Database Validation (Global Service)</p>
         </header>
 
         <div id="loginSection" class="card">
@@ -26,9 +26,33 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter password" required>
                 </div>
-                <button type="submit" class="btn-primary">Login</button>
+                <div class="actions-grid" style="margin-top: 1rem;">
+                    <button type="submit" class="btn-primary" style="grid-column: span 2;">Login</button>
+                    <button type="button" id="showCreateBtn" class="btn-outline">New Election</button>
+                    <button type="button" id="showImportBtn" class="btn-outline">Import Data</button>
+                </div>
             </form>
             <div id="loginMessage" class="message-box"></div>
+            <input type="file" id="globalFileInput" accept=".json" class="hidden">
+        </div>
+
+        <div id="createSection" class="card hidden">
+            <h2 style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-main); text-align:center;">Create New Election</h2>
+            <form id="createForm">
+                <div class="form-group">
+                    <label for="newUsername">Election Username</label>
+                    <input type="text" id="newUsername" name="newUsername" placeholder="Choose a unique username" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Password</label>
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Choose a secure password" required>
+                </div>
+                <div class="actions-grid" style="margin-top: 1rem;">
+                    <button type="submit" class="btn-primary">Create Election</button>
+                    <button type="button" id="cancelCreateBtn" class="btn-outline">Back to Login</button>
+                </div>
+            </form>
+            <div id="createMessage" class="message-box"></div>
         </div>
 
         <div id="appContent" class="hidden">
@@ -44,7 +68,7 @@
                 <form id="votingForm">
                     <div class="form-group">
                         <label for="firstName">First Name <span style="color:var(--error-color)">*</span></label>
-                        <input type="text" id="firstName" name="firstName" required placeholder="e.g. John" autocomplete="off">
+                        <input type="text" id="firstName" name="firstName" required pattern="[A-Za-z]+" title="Only alphabetic characters allowed" placeholder="e.g. John" autocomplete="off">
                     </div>
 
                     <div class="form-group">
@@ -53,8 +77,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="voterId">Voter ID / Email</label>
-                        <input type="text" id="voterId" name="voterId" placeholder="ID-123 or email@example.com" autocomplete="off">
+                        <label for="voterId">Voter ID <span style="color:var(--error-color)">*</span></label>
+                        <input type="text" id="voterId" name="voterId" required pattern="\d{4}" title="Strictly 4 numeric digits" placeholder="e.g. 1234" autocomplete="off">
                     </div>
 
                     <button type="submit" class="btn-primary">Submit Vote</button>
@@ -67,18 +91,17 @@
                 <h2 style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-main);">Data Management</h2>
                 <div class="actions-grid">
                     <button id="exportBtn" class="btn-outline">Export Data</button>
-                    <button id="importBtn" class="btn-outline">Import Data</button>
-                    <button id="logoutBtn" class="btn-outline" style="grid-column: span 2; border-color: var(--error-color); color: var(--error-color);">Logout</button>
+                    <button id="logoutBtn" class="btn-outline" style="border-color: var(--error-color); color: var(--error-color);">Logout</button>
                 </div>
-                <input type="file" id="fileInput" accept=".json" class="hidden">
-                <div id="importStatus" class="message-box"></div>
+                <div id="managementStatus" class="message-box"></div>
             </div>
 
             <div class="footer">
-                Backend Database Persistence Enabled
+                Browser Cache (SQLite via WebAssembly) Enabled
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
