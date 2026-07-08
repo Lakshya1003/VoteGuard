@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteGuard - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoteGuard Logo" class="app-logo">
+            <h1>VoteGuard</h1>
+            <p class="subtitle">Operator: {{ user_id }}</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="vote-count">{{ vote_count }}</div>
+                <div class="stat-label">Total Votes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="duplicate-count" style="color: var(--error-color);">{{ duplicate_attempts }}</div>
+                <div class="stat-label">Duplicates Caught</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Record a Vote</h2>
+            
+            <div id="alert-box" class="alert"></div>
+
+            <form id="vote-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-group">
+                    <label for="first_name">First Name * (Alphabets only)</label>
+                    <input type="text" id="first_name" name="first_name" required pattern="[A-Za-z]+" title="Only alphabetic characters allowed, no spaces">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name (Optional, Alphabets only)</label>
+                    <input type="text" id="last_name" name="last_name" pattern="[A-Za-z]+" title="Only alphabetic characters allowed, no spaces">
+                </div>
+                <div class="form-group">
+                    <label for="aadhaar_4">Last 4 Digits of Aadhaar *</label>
+                    <input type="text" id="aadhaar_4" name="aadhaar_4" required pattern="\d{4}" title="Exactly 4 numeric digits" maxlength="4">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Vote</button>
+            </form>
+        </div>
+
+        <div class="card recent-entries">
+            <h2>Recent Entries</h2>
+            {% if recent_votes %}
+            <ul class="entry-list" id="entry-list">
+                {% for vote in recent_votes %}
+                <li class="entry-item">
+                    <span class="entry-name">{{ vote.first_name|title }} {{ vote.last_name|title if vote.last_name else '' }}</span>
+                    <span class="entry-id">****-****-{{ vote.aadhaar_4 }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p id="empty-state" style="color: var(--text-light); text-align: center; padding: 1rem;">No votes recorded yet.</p>
+            <ul class="entry-list" id="entry-list" style="display: none;"></ul>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-actions">
+            <a href="{{ url_for('export') }}" class="btn btn-outline" style="text-align: center; padding: 0.85rem; margin-top: 0;">Export Data (JSON)</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger" style="text-align: center; padding: 0.85rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('vote-form');
+        const alertBox = document.getElementById('alert-box');
+        const voteCountEl = document.getElementById('vote-count');
+        const duplicateCountEl = document.getElementById('duplicate-count');
+        const entryList = document.getElementById('entry-list');
+        const emptyState = document.getElementById('empty-state');
+
+        function showAlert(message, isError) {
+            alertBox.textContent = message;
+            alertBox.className = 'alert';
+            alertBox.classList.add(isError ? 'alert-error' : 'alert-success');
+            
+            setTimeout(() => {
+                alertBox.className = 'alert';
+            }, 5000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('{{ url_for("submit_vote") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrf_token')
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(result.message, false);
+                    
+                    // Update counts
+                    const currentCount = parseInt(voteCountEl.textContent);
+                    voteCountEl.textContent = currentCount + 1;
+                    
+                    // Update list
+                    if (emptyState) emptyState.style.display = 'none';
+                    entryList.style.display = 'block';
+                    
+                    const fn = formData.get('first_name').toLowerCase();
+                    const ln = formData.get('last_name').toLowerCase();
+                    const a4 = formData.get('aadhaar_4');
+                    
+                    const capitalizedFn = fn.charAt(0).toUpperCase() + fn.slice(1);
+                    const capitalizedLn = ln ? ln.charAt(0).toUpperCase() + ln.slice(1) : '';
+                    
+                    const li = document.createElement('li');
+                    li.className = 'entry-item';
+                    li.innerHTML = `
+                        <span class="entry-name">${capitalizedFn} ${capitalizedLn}</span>
+                        <span class="entry-id">****-****-${a4}</span>
+                    `;
+                    
+                    entryList.insertBefore(li, entryList.firstChild);
+                    
+                    form.reset();
+                    document.getElementById('first_name').focus();
+                } else {
+                    showAlert(result.message, true);
+                    if (result.message.includes('DUPLICATE')) {
+                        const currentDups = parseInt(duplicateCountEl.textContent);
+                        duplicateCountEl.textContent = currentDups + 1;
+                        
+                        // Shake animation for duplicate count
+                        duplicateCountEl.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            duplicateCountEl.style.transform = 'scale(1)';
+                            duplicateCountEl.style.transition = 'transform 0.2s';
+                        }, 200);
+                    }
+                }
+            } catch (err) {
+                showAlert('Network error occurred.', true);
+            }
+        });
+    </script>
+</body>
+</html>

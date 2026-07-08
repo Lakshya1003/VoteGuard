@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteGuard - Page Not Found</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoteGuard Logo" class="app-logo">
+            <h1>VoteGuard</h1>
+            <p class="subtitle">Secure Vote Counting & Duplicate Detection System</p>
+        </header>
+
+        <div class="card" style="text-align: center;">
+            <h2 style="border-bottom: none; color: var(--error-color); font-size: 2rem;">404</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.2rem; font-weight: 600;">
+                Page Not Found
+            </p>
+            <p style="margin-bottom: 2rem; color: var(--text-light);">
+                The page you are looking for does not exist or has been moved.
+            </p>
+            
+            <a href="{{ url_for('landing') }}" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.85rem 2rem;">Return to Home</a>
+        </div>
+    </div>
+</body>
+</html>

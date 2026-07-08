@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteGuard - Authentication</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoteGuard Logo" class="app-logo">
+            <h1>VoteGuard</h1>
+            <p class="subtitle">Operator Setup</p>
+        </header>
+
+        <div class="card">
+            <h2>{% if mode == 'new' %}Create New Election{% else %}Import Data & Continue{% endif %}</h2>
+            
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" {% if mode == 'import' %}enctype="multipart/form-data"{% endif %}>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-group">
+                    <label for="user_id">Operator User ID *</label>
+                    <input type="text" id="user_id" name="user_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Operator Password *</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                {% if mode == 'import' %}
+                <div class="form-group">
+                    <label for="file">JSON Export File *</label>
+                    <input type="file" id="file" name="file" accept=".json" required>
+                </div>
+                <div class="form-group" style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <label style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Import Strategy</label>
+                    <div style="margin-bottom: 0.5rem;">
+                        <input type="radio" id="merge" name="import_mode" value="merge" checked style="width: auto; margin-right: 0.5rem;">
+                        <label for="merge" style="display: inline; font-weight: normal;"><strong>Merge Election</strong> (Only insert new votes)</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="replace" name="import_mode" value="replace" style="width: auto; margin-right: 0.5rem;" onclick="return confirm('Warning: This will DELETE all current votes in this election before importing. Are you sure?')">
+                        <label for="replace" style="display: inline; font-weight: normal; color: var(--error-color);"><strong>Replace Election</strong> (Delete existing votes)</label>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn btn-primary">
+                    {% if mode == 'new' %}Start Election{% else %}Import & Login{% endif %}
+                </button>
+            </form>
+            
+            <a href="{{ url_for('landing') }}" class="btn btn-outline" style="text-align: center; display: block; padding: 0.5rem; margin-top: 1rem; border: none; font-weight: 500;">Go Back</a>
+        </div>
+    </div>
+</body>
+</html>

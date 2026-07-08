@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteGuard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoteGuard Logo" class="app-logo">
+            <h1>VoteGuard</h1>
+            <p class="subtitle">Secure Vote Counting & Duplicate Detection System</p>
+        </header>
+
+        <div class="card" style="text-align: center;">
+            <p style="margin-bottom: 2rem; color: var(--text-light);">
+                Welcome to VoteGuard. Please select an option to continue.
+            </p>
+            
+            <a href="{{ url_for('new_election') }}" class="btn btn-primary" style="margin-bottom: 1rem;">NEW ELECTION</a>
+            <a href="{{ url_for('import_data') }}" class="btn btn-outline">IMPORT DATA AND CONTINUE</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <p class="dev-info">Developer: Lakshya Raj Malviya</p>
+            <p class="dev-info"><a href="https://www.linkedin.com/in/lakshya-raj-malviya/" target="_blank">LinkedIn Profile</a></p>
+        </div>
+    </div>
+</body>
+</html>
