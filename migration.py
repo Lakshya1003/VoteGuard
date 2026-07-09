@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DB_FILE = 'voteguard.db'
+DB_FILE = os.getenv("DATABASE_PATH", "voteguard.db")
 
 def migrate():
     if not os.path.exists(DB_FILE):
