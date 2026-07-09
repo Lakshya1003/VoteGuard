@@ -59,25 +59,6 @@ VoteGuard operates on a robust 3-tier architecture:
    - SQLite evaluates the composite key constraint. If valid, the vote is saved. If it violates uniqueness, an `IntegrityError` is thrown, caught by Flask, and passed to the frontend to flag the duplicate.
 4. **Live Updates:** The DOM updates dynamically to reflect successful votes or increment the caught duplicate counter.
 
-## 📁 Folder Structure
-
-```text
-Voteing-verification/
-├── app.py                # Core Flask backend and routing
-├── migration.py          # SQLite schema migration script
-├── requirements.txt      # Python dependencies
-├── README.md             # Project documentation
-├── static/
-│   ├── logo.png          # VoteGuard logo
-│   └── style.css         # UI styling (Mobile-responsive, glassmorphism)
-└── templates/
-    ├── landing.html      # Gateway screen
-    ├── auth.html         # Login / Setup / Import screen
-    ├── dashboard.html    # Main voting interface
-    ├── 404.html          # Custom Not Found error
-    └── 500.html          # Custom Server Error
-```
-
 ## 🔐 Demo Credentials
 
 If you are accessing the live demo, you can test the application using the following operator credentials:
