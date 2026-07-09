@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteGuard - Secure Election Gateway</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #f8fafc; 
+            color: #0f172a; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        .card { 
+            background: white; 
+            padding: 2.5rem 2rem; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            max-width: 500px; 
+            width: 100%;
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+        }
+        h1 { 
+            color: #1e3a8a; 
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+        .btn { 
+            display: inline-block; 
+            background: #1e3a8a; 
+            color: white; 
+            padding: 0.85rem 1.5rem; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.2s;
+            margin-bottom: 1rem;
+        }
+        .btn:hover { 
+            background: #1e40af; 
+        }
+        .alert { 
+            background: #f1f5f9; 
+            color: #334155; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            border: 1px solid #e2e8f0; 
+            font-size: 0.9rem; 
+            text-align: left;
+        }
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin: 0 auto 1rem auto;
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="static/logo.png" alt="VoteGuard Logo" class="app-logo">
+        <h1>VoteGuard</h1>
+        <p>A secure voting and duplicate detection system powered by Python Flask.</p>
+        
+        <!-- Link to access the local software -->
+        <a href="http://127.0.0.1:5000/" class="btn">Access Application (Local)</a>
+        
+        <div class="alert">
+            <strong>Render Deployment Ready:</strong><br><br>
+            This application is fully configured for deployment on <b>Render.com</b>!<br><br>
+            <em>Note: The full VoteGuard application relies on a Python Flask backend and an SQLite database. When deploying to Render, be sure to set up a <b>Persistent Disk</b> and map it via the <code>DATABASE_PATH</code> environment variable to ensure your voting data survives server restarts.</em>
+        </div>
+    </div>
+    
+    <script>
+        // Automatically redirect to the local Flask server if opened directly from the file system
+        if (window.location.protocol === 'file:') {
+            console.log("Opened locally, click the button to access the Flask server on port 5000.");
+        }
+    </script>
+</body>
+</html>

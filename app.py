@@ -19,7 +19,7 @@ csrf = CSRFProtect(app)
 # 10. Session Expiration
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-DB_FILE = 'voteguard.db'
+DB_FILE = os.getenv("DATABASE_PATH", "voteguard.db")
 
 # 8. Improve Database Connection Management
 def get_db():
